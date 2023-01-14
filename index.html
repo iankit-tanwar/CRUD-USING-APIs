@@ -82,6 +82,8 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 
 
     <script>
@@ -128,17 +130,40 @@
                 console.log(err);
             });
 
+        let bdy = document.querySelector('body');
+
 
 
         let sendMyData = (elem) => {
+
+
+
+            let fn = elem.querySelector('input#fname').value;
+            let ln = elem.querySelector('input#lname').value;
+            let eml = elem.querySelector('input#email').value;
+
+
+
+            if(fn ==="" || ln === "" || eml== ""){
+                swal({
+                        title: "please fill the required fields",
+                        text: "You clicked the button!",
+                        icon: "error",
+                        button: "ok",
+                    });
+
+            }
+            else{
+                bdy.innerHTML += `
+            <div class="spinner-grow ankitspinner position-fixedstart-50" role="status">
+            <span class="visually-hidden">Loading...</span>
+            </div>`;
             console.log(elem);
             console.log(elem.querySelector('input#fname').value);
             console.log(elem.querySelector('input#lname').value);
             console.log(elem.querySelector('input#email').value);
-            let fn= elem.querySelector('input#fname').value;
-            let ln = elem.querySelector('input#lname').value;
-            let eml=elem.querySelector('input#email').value;
             
+
 
             let jsondata = {
 
@@ -147,34 +172,52 @@
                 "email": eml
 
             };
-            console.log(jsondata);
+            console.log(typeof jsondata);        //object
+            console.log(typeof JSON.stringify(jsondata));  //object to string
+            console.log(typeof JSON.parse(JSON.stringify(jsondata)));  //string to object
 
-            fetch('https://reqres.in/api/users',{
-                method:"POST",
+            fetch('https://reqres.in/api/users', {
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify(jsondata)
 
             })
-            .then((res)=>{
-                return res.json();
+                .then((res) => {
+                    return res.json();
 
-            })
-            .then((data)=>{
-                console.log(data);
-                alert("data saved successfully");
+                })
+                .then((data) => {
+                    console.log(data);
+                    //alert("data saved successfully");
 
-            })
-            .catch((error)=>{
-                console.log(error);
+                    document.querySelector(".ankitspinner").remove();
 
-            });
+
+                    swal({
+                        title: "data saved successfully",
+                        text: "You clicked the button!",
+                        icon: "success",
+                        button: "ok",
+                    });
+
+                })
+                .catch((error) => {
+                    console.log(error);
+
+                });
+
+
+            }
+
+
             
 
 
 
 
-            
+
         }
 
 
